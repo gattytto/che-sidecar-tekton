@@ -45,7 +45,7 @@ RUN cd /tmp && wget https://github.com/bazelbuild/buildtools/releases/download/0
 
 RUN mkdir /projects ${HOME} && \
     # Change permissions to let any arbitrary user
-    for f in "${HOME}" "/etc/passwd" "/projects" "/go"; do \
+    for f in "${HOME}" "/etc/passwd" "/projects"; do \
       echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
       chmod -R g+rwX ${f}; \
     done
