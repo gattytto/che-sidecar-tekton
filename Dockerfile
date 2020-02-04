@@ -11,6 +11,8 @@
 FROM debian:10-slim
 
 ENV HOME=/home/theia
+ENV KUBECTL_VERSION v1.16.1
+ENV HELM_VERSION v2.14.3
 
 RUN apt-get update && \
     apt-get install git wget gnupg unzip curl software-properties-common dirmngr apt-transport-https lsb-release ca-certificates -y && \
@@ -40,7 +42,13 @@ RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | a
     apt-get -y install bazel && \
     apt-get -y upgrade bazel 
 
-
+RUN curl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl && \
+    curl -o- -L https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /usr/local/bin --strip 1 && \
+    # set up local Helm configuration skipping Tiller installation
+    helm init --client-only && \
+    # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
+    dnf install -y which nodejs
     
 RUN cd /tmp && wget https://github.com/bazelbuild/buildtools/releases/download/0.29.0/buildifier && chmod 777 buildifier && mv buildifier /usr/bin/
 RUN cd /tmp && wget https://github.com/bazelbuild/buildtools/releases/download/0.29.0/buildozer && chmod 777 buildozer && mv buildozer /usr/bin/
