@@ -24,6 +24,7 @@ RUN apt-get update && \
     update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-8 100 && \
     update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-8 100 && \
     update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-8 100 && \
+    systemctl enable snapd && systemctl start snapd && \
     snap install --classic kubectl && \
     mkdir -p /usr/share/man/man1/ && mkdir -p /usr/share/man/man7/
 
