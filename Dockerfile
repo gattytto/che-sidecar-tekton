@@ -20,14 +20,12 @@ RUN apt-get update && \
     wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     wget -O - https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get update && \
-    apt-get install snapd nodejs clangd-8 clang-8 clang-format-8 gdb autoconf gcc g++ libc6 make bison libxml2-dev -y && \
+    apt-get install nodejs clangd-8 clang-8 clang-format-8 gdb autoconf gcc g++ libc6 make bison libxml2-dev -y && \
     apt-get clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/clang clang /usr/bin/clang-8 100 && \
     update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-8 100 && \
     update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-8 100 && \
     update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-8 100 && \
-    systemctl enable snapd && systemctl start snapd && \
-    snap install --classic kubectl && \
     mkdir -p /usr/share/man/man1/ && mkdir -p /usr/share/man/man7/
 
 # Install bazel (https://docs.bazel.build/versions/master/install-ubuntu.html)
