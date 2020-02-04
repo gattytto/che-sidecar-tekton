@@ -30,7 +30,7 @@ RUN apt-get update && \
 RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
     curl https://bazel.build/bazel-release.pub.gpg | apt-key add - && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3EFE0E0A2F2F60AA && \
-    echo "deb http://ppa.launchpad.net/tektoncd/cli/ubuntu eoan main"|sudo tee /etc/apt/sources.list.d/tektoncd-ubuntu-cli.list && \
+    echo "deb http://ppa.launchpad.net/tektoncd/cli/ubuntu eoan main" | tee /etc/apt/sources.list.d/tektoncd-ubuntu-cli.list && \
     echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list && \
     add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
     apt-get update && \
