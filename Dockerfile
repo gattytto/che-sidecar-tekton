@@ -15,7 +15,7 @@ ENV KUBECTL_VERSION v1.16.1
 ENV HELM_VERSION v2.14.3
 
 RUN apt-get update && \
-    apt-get install git wget gnupg unzip curl software-properties-common dirmngr apt-transport-https lsb-release ca-certificates -y && \
+    apt-get install git wget gnupg vim bash unzip curl software-properties-common dirmngr apt-transport-https lsb-release ca-certificates -y && \
     echo 'deb http://apt.llvm.org/buster/ llvm-toolchain-buster-8 main' >> /etc/apt/sources.list && \
     wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     wget -O - https://deb.nodesource.com/setup_10.x | bash - && \
