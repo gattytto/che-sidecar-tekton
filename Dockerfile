@@ -30,7 +30,7 @@ RUN mkdir /projects && \
     curl -o- -L https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /usr/local/bin --strip 1 && \
     # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
     dnf install -y which nodejs dnf-plugins-core && \
-    dnf copr enable chmouel/tektoncd-cli && \
+    dnf copr enable -y chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli
 
 ADD etc/entrypoint.sh /entrypoint.sh
