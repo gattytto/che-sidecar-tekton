@@ -29,7 +29,7 @@ RUN mkdir /projects && \
     chmod +x /usr/local/bin/kubectl && \
     curl -o- -L https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /usr/local/bin --strip 1 && \
     # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
-    dnf install -y which nodejs && \
+    dnf install -y which nodejs yum-plugin-copr && \
     dnf copr enable chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli
 
