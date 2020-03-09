@@ -12,7 +12,7 @@ FROM golang:alpine AS builder
 RUN apk update && apk add --no-cache git
 WORKDIR $GOPATH
 RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
-    CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' . -o $GOPATH/src/tekton-plugin
+    CGO_ENABLED=0 GOOS=linux go build -o $GOPATH/src/tekton-plugin -a -ldflags '-extldflags "-static"' .
 
 FROM quay.io/buildah/stable:v1.11.3
 
