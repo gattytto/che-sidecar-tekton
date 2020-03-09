@@ -8,7 +8,12 @@
 #
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
-
+FROM golang:alpine AS builder
+RUN apk update && apk add --no-cache git
+WORKDIR $GOPATH
+RUN mkdir src && cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
+    go build -o /usr/local/bin/tekton-plugin ./
+COPY /usr/local/bin/tekton-plugin .
 FROM quay.io/buildah/stable:v1.11.3
 
 ENV KUBECTL_VERSION v1.17.0
@@ -32,7 +37,7 @@ RUN mkdir /projects && \
     dnf install -y which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
     dnf copr enable -y chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli
-
+ADD ./tekton-plugin /usr/local/bin/
 ADD etc/entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
