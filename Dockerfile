@@ -43,5 +43,6 @@ RUN mkdir /projects && \
 ADD etc/entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/theia/.octant/plugins
 COPY --from=builder /go/src/tekton-plugin /home/theia/.octant/plugins/
+RUN chgrp -R 0 /home/theia/.octant && chmod -R g+rwX /home/theia/.octant
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ${PLUGIN_REMOTE_ENDPOINT_EXECUTABLE}
