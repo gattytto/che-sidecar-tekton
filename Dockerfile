@@ -13,7 +13,6 @@ RUN apk update && apk add --no-cache git
 WORKDIR $GOPATH
 RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
     go build -o $GOPATH/src/tekton-plugin ./ 
-COPY src/tekton-plugin .
 
 FROM quay.io/buildah/stable:v1.11.3
 
@@ -40,6 +39,7 @@ RUN mkdir /projects && \
     dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins
 ADD ./tekton-plugin /home/theia/.octant/plugins/
 ADD etc/entrypoint.sh /entrypoint.sh
-
+RUN mkdir -p /home/theia/.octant/plugins
+COPY --from=builder /go/src/tekton-plugin /home/theia/.octant/plugins/
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ${PLUGIN_REMOTE_ENDPOINT_EXECUTABLE}
