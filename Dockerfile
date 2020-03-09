@@ -38,7 +38,7 @@ RUN mkdir /projects && \
     dnf copr enable -y chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins && \
     wget https://github.com/vmware-tanzu/octant/releases/download/v0.10.2/octant_0.10.2_Linux-64bit.tar.gz && \
-    tar .zxvf octant_0.10.2_Linux-64bit.tar.gz && cd octant_0.10.2_Linux-64bit && cp octant /usr/local/bin/
+    tar -zxvf octant_0.10.2_Linux-64bit.tar.gz && cd octant_0.10.2_Linux-64bit && cp octant /usr/local/bin/
     
 ADD etc/entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/theia/.octant/plugins
