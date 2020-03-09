@@ -36,7 +36,10 @@ RUN mkdir /projects && \
     # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
     dnf install -y which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
     dnf copr enable -y chmouel/tektoncd-cli && \
-    dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins
+    dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins && \
+    wget https://github.com/vmware-tanzu/octant/releases/download/v0.10.2/octant_0.10.2_Linux-64bit.tar.gz && \
+    tar .zxvf octant_0.10.2_Linux-64bit.tar.gz && cd octant_0.10.2_Linux-64bit && cp octant /usr/local/bin/
+    
 ADD etc/entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/theia/.octant/plugins
 COPY --from=builder /go/src/tekton-plugin /home/theia/.octant/plugins/
