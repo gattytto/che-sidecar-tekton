@@ -11,7 +11,7 @@
 FROM golang:alpine AS builder
 RUN apk update && apk add --no-cache git
 WORKDIR $GOPATH
-RUN mkdir src && cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
+RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
     go build -o /usr/local/bin/tekton-plugin ./
 COPY /usr/local/bin/tekton-plugin .
 FROM quay.io/buildah/stable:v1.11.3
