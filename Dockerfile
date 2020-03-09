@@ -37,7 +37,6 @@ RUN mkdir /projects && \
     dnf install -y which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
     dnf copr enable -y chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins
-ADD ./tekton-plugin /home/theia/.octant/plugins/
 ADD etc/entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/theia/.octant/plugins
 COPY --from=builder /go/src/tekton-plugin /home/theia/.octant/plugins/
