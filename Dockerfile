@@ -36,8 +36,8 @@ RUN mkdir /projects && \
     # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
     dnf install -y which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
     dnf copr enable -y chmouel/tektoncd-cli && \
-    dnf install -y tektoncd-cli
-ADD ./tekton-plugin /usr/local/bin/
+    dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins
+ADD ./tekton-plugin /home/theia/.octant/plugins/
 ADD etc/entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
