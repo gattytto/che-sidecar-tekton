@@ -1,3 +1,5 @@
+ 
+# Copyright (c) 2019 Red Hat, Inc.
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
 # which is available at https://www.eclipse.org/legal/epl-2.0/
@@ -6,37 +8,42 @@
 #
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
+FROM golang:alpine AS builder
+RUN apk update && apk add --no-cache git
+WORKDIR $GOPATH
+RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
+    CGO_ENABLED=0 GOOS=linux go build -o $GOPATH/src/tekton-plugin -a -ldflags '-extldflags "-static"' .
 
-FROM debian:10-slim
+FROM quay.io/buildah/stable:v1.11.3
 
+ENV KUBECTL_VERSION v1.17.0
+ENV HELM_VERSION v3.0.2
 ENV HOME=/home/theia
-ENV PROTOC_VERSION=3.11.2
 
-RUN echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install wget gnupg unzip -y && \
-    apt-get update && \
-    apt-get install -t buster-backports clangd-8 clang-8 clang-format-8 gdb -y && \
-    apt-get clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && \
-    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-8 100 && \
-    update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-8 100 && \
-    update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-8 100 && \
-    update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-8 100
+ADD etc/storage.conf $HOME/.config/containers/storage.conf
 
-RUN cd /tmp && mkdir protoc-download && cd protoc-download && \
-    wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
-    unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip && rm -f protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
-    cp bin/protoc /usr/local/bin && mkdir /usr/include/protobuf &&  \
-    cp -R include/* /usr/include/protobuf/ && cd ../ && rm -rf protoc-download 
-    
-RUN mkdir /projects ${HOME} && \
+RUN mkdir /projects && \
     # Change permissions to let any arbitrary user
     for f in "${HOME}" "/etc/passwd" "/projects"; do \
       echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
       chmod -R g+rwX ${f}; \
-    done
-
+    done && \
+    # buildah login requires writing to /run
+    chgrp -R 0 /run && chmod -R g+rwX /run && \
+    curl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl && \
+    curl -o- -L https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar xvz -C /usr/local/bin --strip 1 && \
+    # 'which' utility is used by VS Code Kubernetes extension to find the binaries, e.g. 'kubectl'
+    dnf install -y file wget which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
+    dnf copr enable -y chmouel/tektoncd-cli && \
+    dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins && \
+    wget https://github.com/vmware-tanzu/octant/releases/download/v0.10.2/octant_0.10.2_Linux-64bit.tar.gz && \
+    tar -zxvf octant_0.10.2_Linux-64bit.tar.gz && cd octant_0.10.2_Linux-64bit && cp octant /usr/local/bin/
+    
 ADD etc/entrypoint.sh /entrypoint.sh
-
+RUN mkdir -p /home/theia/.octant/plugins
+COPY --from=builder /go/src/tekton-plugin /home/theia/.octant/plugins/
+RUN chgrp -R 0 /home/theia/.octant && chmod -R g+rwX /home/theia/.octant
+RUN chown -R 1724:root /home/theia/.octant
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ${PLUGIN_REMOTE_ENDPOINT_EXECUTABLE}
