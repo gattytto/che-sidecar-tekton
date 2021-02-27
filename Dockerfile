@@ -14,7 +14,7 @@ WORKDIR $GOPATH
 RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimental/octant-plugin && \
     CGO_ENABLED=0 GOOS=linux go build -o $GOPATH/src/tekton-plugin -a -ldflags '-extldflags "-static"' .
 
-FROM quay.io/buildah/stable:v1.11.3
+FROM quay.io/buildah/stable:v1.19.6
 
 ENV KUBECTL_VERSION v1.1.20.4
 ENV HELM_VERSION v3.5.2
