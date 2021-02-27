@@ -16,8 +16,8 @@ RUN cd src && git clone https://github.com/tektoncd/experimental && cd experimen
 
 FROM quay.io/buildah/stable:v1.11.3
 
-ENV KUBECTL_VERSION v1.17.0
-ENV HELM_VERSION v3.0.2
+ENV KUBECTL_VERSION v1.1.20.4
+ENV HELM_VERSION v3.5.2
 ENV HOME=/home/theia
 
 ADD etc/storage.conf $HOME/.config/containers/storage.conf
@@ -37,8 +37,8 @@ RUN mkdir /projects && \
     dnf install -y file wget which nodejs dnf-plugins-core java-11-openjdk.x86_64 && \
     dnf copr enable -y chmouel/tektoncd-cli && \
     dnf install -y tektoncd-cli && mkdir -p /home/theia/.octant/plugins && \
-    wget https://github.com/vmware-tanzu/octant/releases/download/v0.10.2/octant_0.10.2_Linux-64bit.tar.gz && \
-    tar -zxvf octant_0.10.2_Linux-64bit.tar.gz && cd octant_0.10.2_Linux-64bit && cp octant /usr/local/bin/
+    wget https://github.com/vmware-tanzu/octant/releases/download/v0.17.0/octant_0.17.0_Linux-64bit.tar.gz && \
+    tar -zxvf octant_0.17.0_Linux-64bit.tar.gz && cd octant_0.17.0_Linux-64bit && cp octant /usr/local/bin/
     
 ADD etc/entrypoint.sh /entrypoint.sh
 RUN mkdir -p /home/theia/.octant/plugins
