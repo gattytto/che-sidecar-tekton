@@ -19,7 +19,7 @@ FROM quay.io/eclipse/che-sidecar-kubernetes-tooling:1.2.1-6144144
 ENV OCTANT_VERSION 0.17.0
 ENV TEKTONCD_VERSION 0.16.0
 
-RUN dnf install -y wget && \
+RUN dnf install -y wget shadow-utils && \
     mkdir -p /home/theia/.octant/plugins && \
     wget https://github.com/vmware-tanzu/octant/releases/download/v${OCTANT_VERSION}/octant_${OCTANT_VERSION}_Linux-64bit.tar.gz && \
     tar -zxvf octant_${OCTANT_VERSION}_Linux-64bit.tar.gz && cd octant_${OCTANT_VERSION}_Linux-64bit && cp octant /usr/local/bin/ && \
